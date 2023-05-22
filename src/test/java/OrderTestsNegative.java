@@ -35,7 +35,7 @@ public class OrderTestsNegative {
         Assertions.assertEquals(expected,actual);
 
     }
-    
+
     @Test
     void shouldTestEmpty() {
         driver.get("http://localhost:9999/");
