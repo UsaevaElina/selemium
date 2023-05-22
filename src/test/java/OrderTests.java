@@ -1,3 +1,4 @@
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -8,8 +9,7 @@ public class OrderTests {
     private WebDriver driver;
     @BeforeAll
     static void setUpAll() {
-// убедитесь, что файл chromedriver.exe расположен именно в каталоге C:\tmp
-        System.setProperty("webdriver.chrome.driver", "./driver/win/chromedriver.exe");
+        WebDriverManager.chromedriver().setup();
     }
 
     @BeforeEach
@@ -19,6 +19,7 @@ public class OrderTests {
         options.addArguments("--no-sandbox");
         options.addArguments("--headless");
         driver = new ChromeDriver(options);
+        driver.get("http://localhost:9999/");
     }
     @AfterEach
     void tearDown() {
@@ -27,14 +28,53 @@ public class OrderTests {
     }
     @Test
     void shouldTestPositivResult() {
-        driver.get("http://localhost:9999/");
         driver.findElement(By.cssSelector("[data-test-id=name] input")).sendKeys("Усаева Элина");
         driver.findElement(By.cssSelector("[data-test-id=phone] input")).sendKeys("+79996705891");
         driver.findElement(By.cssSelector("[data-test-id=agreement]")).click();
         driver.findElement(By.className("button__text")).click();
         String expected = "  Ваша заявка успешно отправлена! Наш менеджер свяжется с вами в ближайшее время.";
-        String acrual = driver.findElement(By.cssSelector("[data-test-id=order-success]")).getText();
-        Assertions.assertEquals(expected,acrual);
-
+        String actual = driver.findElement(By.cssSelector("[data-test-id=order-success]")).getText();
+        Assertions.assertEquals(expected,actual);
     }
+    @Test
+    void shouldTestPositivResultDoubleSurname() {
+        driver.findElement(By.cssSelector("[data-test-id=name] input")).sendKeys("Бобрищев-Пушкин Александр");
+        driver.findElement(By.cssSelector("[data-test-id=phone] input")).sendKeys("+79916705891");
+        driver.findElement(By.cssSelector("[data-test-id=agreement]")).click();
+        driver.findElement(By.className("button__text")).click();
+        String expected = "  Ваша заявка успешно отправлена! Наш менеджер свяжется с вами в ближайшее время.";
+        String actual = driver.findElement(By.cssSelector("[data-test-id=order-success]")).getText();
+        Assertions.assertEquals(expected,actual);
+    }
+    @Test
+    void shouldTestPositivResultDoubleName() {
+        driver.findElement(By.cssSelector("[data-test-id=name] input")).sendKeys("Николаева Анна-Мария");
+        driver.findElement(By.cssSelector("[data-test-id=phone] input")).sendKeys("+79916705891");
+        driver.findElement(By.cssSelector("[data-test-id=agreement]")).click();
+        driver.findElement(By.className("button__text")).click();
+        String expected = "  Ваша заявка успешно отправлена! Наш менеджер свяжется с вами в ближайшее время.";
+        String actual = driver.findElement(By.cssSelector("[data-test-id=order-success]")).getText();
+        Assertions.assertEquals(expected,actual);
+    }
+    @Test
+    void shouldTestPositivResultLongSurname() {
+        driver.findElement(By.cssSelector("[data-test-id=name] input")).sendKeys("СЕМИПОПОЛОВИГЕРОВЕРСАЛОФЕДИРАКОВСКИЙ Апполинария");
+        driver.findElement(By.cssSelector("[data-test-id=phone] input")).sendKeys("+79916705891");
+        driver.findElement(By.cssSelector("[data-test-id=agreement]")).click();
+        driver.findElement(By.className("button__text")).click();
+        String expected = "  Ваша заявка успешно отправлена! Наш менеджер свяжется с вами в ближайшее время.";
+        String actual = driver.findElement(By.cssSelector("[data-test-id=order-success]")).getText();
+        Assertions.assertEquals(expected,actual);
+    }
+    @Test
+    void shouldTestPositivResultShortSurnameName() {
+        driver.findElement(By.cssSelector("[data-test-id=name] input")).sendKeys("Ия Яи");
+        driver.findElement(By.cssSelector("[data-test-id=phone] input")).sendKeys("+79916705891");
+        driver.findElement(By.cssSelector("[data-test-id=agreement]")).click();
+        driver.findElement(By.className("button__text")).click();
+        String expected = "  Ваша заявка успешно отправлена! Наш менеджер свяжется с вами в ближайшее время.";
+        String actual = driver.findElement(By.cssSelector("[data-test-id=order-success]")).getText();
+        Assertions.assertEquals(expected,actual);
+    }
+
 }
